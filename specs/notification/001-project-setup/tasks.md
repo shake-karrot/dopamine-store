@@ -25,11 +25,11 @@
 
 **Purpose**: Gradle 멀티모듈 프로젝트 기본 구조 생성
 
-- [ ] T001 Create notification directory at repository root `notification/`
-- [ ] T002 Create `notification/settings.gradle.kts` with submodule includes (core, app, worker, adapter)
-- [ ] T003 Create `notification/gradle.properties` with version properties (kotlin=1.9.25, springBoot=3.5.8)
-- [ ] T004 [P] Create `notification/build.gradle.kts` with shared plugins and dependencies
-- [ ] T005 [P] Initialize Gradle Wrapper (8.10+) in `notification/` directory
+- [x] T001 Create notification directory at repository root `notification/`
+- [x] T002 Create `notification/settings.gradle.kts` with submodule includes (core, app, worker, adapter)
+- [x] T003 Create `notification/gradle.properties` with version properties (kotlin=1.9.25, springBoot=3.5.8)
+- [x] T004 [P] Create `notification/build.gradle.kts` with shared plugins and dependencies
+- [x] T005 [P] Initialize Gradle Wrapper (8.10+) in `notification/` directory
 
 ---
 
@@ -39,14 +39,14 @@
 
 **⚠️ CRITICAL**: User Story 작업 전 모든 모듈 구조 완료 필요
 
-- [ ] T006 [P] Create `notification/core/build.gradle.kts` (Spring Framework only, no Boot)
-- [ ] T007 [P] Create `notification/adapter/build.gradle.kts` with `implementation(project(":core"))`
-- [ ] T008 [P] Create `notification/app/build.gradle.kts` with Spring Boot plugin, depends on core and adapter
-- [ ] T009 [P] Create `notification/worker/build.gradle.kts` with Spring Boot plugin, depends on core and adapter
-- [ ] T010 [P] Create core source directory `notification/core/src/main/kotlin/com/dopaminestore/notification/core/`
-- [ ] T011 [P] Create adapter source directory `notification/adapter/src/main/kotlin/com/dopaminestore/notification/adapter/`
-- [ ] T012 [P] Create app source directory `notification/app/src/main/kotlin/com/dopaminestore/notification/app/`
-- [ ] T013 [P] Create worker source directory `notification/worker/src/main/kotlin/com/dopaminestore/notification/worker/`
+- [x] T006 [P] Create `notification/core/build.gradle.kts` (Spring Framework only, no Boot)
+- [x] T007 [P] Create `notification/adapter/build.gradle.kts` with `implementation(project(":core"))`
+- [x] T008 [P] Create `notification/app/build.gradle.kts` with Spring Boot plugin, depends on core and adapter
+- [x] T009 [P] Create `notification/worker/build.gradle.kts` with Spring Boot plugin, depends on core and adapter
+- [x] T010 [P] Create core source directory `notification/core/src/main/kotlin/com/dopaminestore/notification/core/`
+- [x] T011 [P] Create adapter source directory `notification/adapter/src/main/kotlin/com/dopaminestore/notification/adapter/`
+- [x] T012 [P] Create app source directory `notification/app/src/main/kotlin/com/dopaminestore/notification/app/`
+- [x] T013 [P] Create worker source directory `notification/worker/src/main/kotlin/com/dopaminestore/notification/worker/`
 
 **Checkpoint**: `./gradlew projects` 명령으로 4개 모듈 확인 가능
 
