@@ -60,12 +60,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T014 [P] [US1] Create package directories in core: `domain/`, `usecase/`, `service/`, `port/`
-- [ ] T015 [P] [US1] Create package directories in adapter: `persistence/`, `external/`, `config/`
-- [ ] T016 [P] [US1] Create package directories in app: `controller/`, `grpc/`, `dto/`
-- [ ] T017 [P] [US1] Create package directories in worker: `consumer/`, `job/`
-- [ ] T018 [US1] Create placeholder `.gitkeep` files in each package directory
-- [ ] T019 [US1] Verify `./gradlew build` succeeds for all modules
+- [x] T014 [P] [US1] Create package directories in core: `domain/`, `usecase/`, `service/`, `port/`
+- [x] T015 [P] [US1] Create package directories in adapter: `persistence/`, `external/`, `config/`
+- [x] T016 [P] [US1] Create package directories in app: `controller/`, `grpc/`, `dto/`
+- [x] T017 [P] [US1] Create package directories in worker: `consumer/`, `job/`
+- [x] T018 [US1] Create placeholder `.gitkeep` files in each package directory
+- [x] T019 [US1] Verify `./gradlew build` succeeds for all modules
 
 **Checkpoint**: 전체 빌드 성공 - User Story 1 완료
 
@@ -79,12 +79,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T020 [US2] Verify core/build.gradle.kts has only Spring Framework dependencies (no Spring Boot Starter)
-- [ ] T021 [US2] Verify adapter/build.gradle.kts has `implementation(project(":core"))` only
-- [ ] T022 [US2] Verify app/build.gradle.kts has `implementation(project(":core"))` and `implementation(project(":adapter"))`
-- [ ] T023 [US2] Verify worker/build.gradle.kts has `implementation(project(":core"))` and `implementation(project(":adapter"))`
-- [ ] T024 [US2] Run `./gradlew :core:dependencies --configuration compileClasspath` and verify no external dependencies
-- [ ] T025 [US2] Run `./gradlew :adapter:dependencies --configuration compileClasspath` and verify core dependency
+- [x] T020 [US2] Verify core/build.gradle.kts has only Spring Framework dependencies (no Spring Boot Starter)
+- [x] T021 [US2] Verify adapter/build.gradle.kts has `implementation(project(":core"))` only
+- [x] T022 [US2] Verify app/build.gradle.kts has `implementation(project(":core"))` and `implementation(project(":adapter"))`
+- [x] T023 [US2] Verify worker/build.gradle.kts has `implementation(project(":core"))` and `implementation(project(":adapter"))`
+- [x] T024 [US2] Run `./gradlew :core:dependencies --configuration compileClasspath` and verify no external dependencies
+- [x] T025 [US2] Run `./gradlew :adapter:dependencies --configuration compileClasspath` and verify core dependency
 
 **Checkpoint**: 의존성 규칙 검증 완료 - User Story 2 완료
 
