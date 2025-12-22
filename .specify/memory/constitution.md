@@ -2,23 +2,20 @@
   ============================================================================
   SYNC IMPACT REPORT
   ============================================================================
-  Version Change: 0.0.0 → 1.0.0 (MAJOR - initial constitution)
+  Version Change: 1.0.0 → 1.1.0 (MINOR - module structure & tech versions added)
 
-  Modified Principles: N/A (initial creation)
+  Modified Principles: None
 
   Added Sections:
-    - Multi-Module Structure (브랜치 prefix 기반 팀 분리)
-    - Core Principles (5 principles)
-      - I. Concurrency-First Architecture
-      - II. Domain Ownership
-      - III. Prototype-Validate-Harden
-      - IV. Observability by Default
-      - V. Fairness Guarantees
-    - Technical Standards
-    - Development Workflow
-    - Governance
+    - Internal Module Architecture (core, app, worker, adapter)
+    - Module Dependencies Rules
+    - Detailed tech stack versions (Spring Boot 3.5.8, Kotlin 1.9.25)
 
-  Removed Sections: N/A (initial creation)
+  Removed Sections: None
+
+  Modified Sections:
+    - Multi-Module Structure: 내부 모듈 구조 상세화
+    - Technical Standards: 버전 명시, DB 선택 자유화
 
   Templates Verification:
     - .specify/templates/plan-template.md: ✅ Compatible
@@ -36,9 +33,10 @@
 
 ## Multi-Module Structure
 
-### Team Separation via Branch Prefix
+### Repository Overview
 
-각 팀은 브랜치 prefix로 구분되며, specs 디렉토리 구조에 반영됩니다:
+dopamine-store는 하나의 레포지토리 아래 3개의 독립적인 멀티모듈 프로젝트로 구성된다.
+각 프로젝트는 MSA처럼 취급되며, 서로 의존성이 없고 독립적으로 배포 가능하다.
 
 ```
 dopamine-store/
@@ -48,29 +46,106 @@ dopamine-store/
 │   └── templates/               # 공통 템플릿
 │
 ├── specs/                       # 모든 팀의 specification 저장소
-│   ├── notification/            # notification 팀
-│   │   ├── 001-alert-service/
-│   │   │   ├── spec.md
-│   │   │   ├── plan.md
-│   │   │   └── tasks.md
-│   │   └── 002-scheduled-notify/
-│   │
-│   ├── purchase/                # purchase 팀 (Product, PurchaseSlot, Payment)
-│   │   ├── 001-slot-acquisition/
-│   │   └── 002-payment-flow/
-│   │
-│   └── auth/                    # auth 팀
-│       ├── 001-user-signup/
-│       └── 002-jwt-auth/
+│   ├── notification/
+│   ├── purchase/
+│   └── auth/
 │
-├── notification/                # notification 모듈 소스코드
-│   └── src/
-├── purchase/                    # purchase 모듈 소스코드
-│   └── src/
-├── auth/                        # auth 모듈 소스코드
-│   └── src/
+├── notification/                # 알림 도메인 (독립 프로젝트)
+│   ├── build.gradle.kts
+│   ├── settings.gradle.kts
+│   ├── core/
+│   ├── app/
+│   ├── worker/
+│   └── adapter/
+│
+├── purchase/                    # 구매 도메인 (독립 프로젝트)
+│   ├── build.gradle.kts
+│   ├── settings.gradle.kts
+│   ├── core/
+│   ├── app/
+│   ├── worker/
+│   └── adapter/
+│
+├── auth/                        # 인증 도메인 (독립 프로젝트)
+│   ├── build.gradle.kts
+│   ├── settings.gradle.kts
+│   ├── core/
+│   ├── app/
+│   ├── worker/
+│   └── adapter/
+│
 └── shared/                      # 공유 코드 (이벤트 스키마 등)
     └── events/
+```
+
+### Internal Module Architecture
+
+각 도메인 프로젝트(notification, purchase, auth)는 동일한 내부 모듈 구조를 따른다:
+
+| Module | Responsibility | Dependencies |
+|--------|----------------|--------------|
+| **core** | 순수 비즈니스 로직. UseCase interface 정의, Service 구현 | Spring Framework까지만 허용 |
+| **app** | REST API, gRPC 엔드포인트. Controller만 포함 | core, adapter |
+| **worker** | Kafka Consumer, 비동기 작업 처리 | core, adapter |
+| **adapter** | DB, 외부 서비스 연동. Repository 구현, External API Client, Config | core |
+
+```
+{domain}/
+├── core/                        # 순수 비즈니스 로직
+│   └── src/main/kotlin/
+│       ├── usecase/             # UseCase interfaces
+│       ├── service/             # Business logic implementation
+│       ├── domain/              # Domain entities
+│       └── port/                # Port interfaces (for adapter)
+│
+├── app/                         # REST API, gRPC
+│   └── src/main/kotlin/
+│       ├── controller/          # REST controllers
+│       ├── grpc/                # gRPC services
+│       └── dto/                 # Request/Response DTOs
+│
+├── worker/                      # Consumer 처리
+│   └── src/main/kotlin/
+│       ├── consumer/            # Kafka consumers
+│       └── job/                 # Scheduled jobs
+│
+└── adapter/                     # 외부 연동
+    └── src/main/kotlin/
+        ├── persistence/         # DB repositories
+        ├── external/            # External API clients
+        └── config/              # External service configs
+```
+
+### Module Dependencies Rules
+
+**프로젝트 간 의존성 (MUST NOT)**:
+- notification, purchase, auth 프로젝트 간 직접 의존성 금지
+- 모든 프로젝트 간 통신은 Kafka 이벤트를 통해서만 수행
+
+**내부 모듈 간 의존성 (build.gradle.kts)**:
+```kotlin
+// app/build.gradle.kts
+dependencies {
+    implementation(project(":core"))
+    implementation(project(":adapter"))
+}
+
+// worker/build.gradle.kts
+dependencies {
+    implementation(project(":core"))
+    implementation(project(":adapter"))
+}
+
+// adapter/build.gradle.kts
+dependencies {
+    implementation(project(":core"))
+}
+
+// core/build.gradle.kts
+dependencies {
+    // Spring Framework까지만 허용
+    // 외부 라이브러리 의존성 금지
+}
 ```
 
 ### Branch Naming Convention
@@ -107,7 +182,7 @@ Examples:
 
 ### Inter-Module Communication
 
-- 모듈 간 직접 호출 금지
+- 프로젝트 간 직접 호출 금지 (MSA 원칙)
 - 모든 통신은 Kafka 이벤트를 통해 비동기로 처리
 - 공유 이벤트 스키마는 `shared/events/` 디렉토리에서 관리
 
@@ -128,12 +203,12 @@ Examples:
 
 ### II. Domain Ownership
 
-각 모듈은 자신의 도메인에 대한 완전한 소유권을 가진다.
+각 프로젝트는 자신의 도메인에 대한 완전한 소유권을 가진다.
 
 **Non-Negotiable Rules**:
-- 각 모듈은 자체 데이터 저장소를 가지며, 다른 모듈의 DB 직접 접근은 금지한다
-- 모듈 간 데이터 필요 시 이벤트 발행 또는 API 호출(비동기)을 사용해야 한다
-- 각 모듈의 `specs/{module}/`은 해당 팀만 수정할 수 있다
+- 각 프로젝트는 자체 데이터 저장소를 가지며, 다른 프로젝트의 DB 직접 접근은 금지한다
+- 프로젝트 간 데이터 필요 시 Kafka 이벤트를 통해서만 통신한다
+- 각 프로젝트의 `specs/{module}/`은 해당 팀만 수정할 수 있다
 - Aggregate Root를 통해서만 도메인 상태를 변경할 수 있다
 - 공유 코드는 `shared/` 디렉토리에서 관리하며, 변경 시 모든 팀 합의가 필요하다
 
@@ -162,11 +237,11 @@ Examples:
 모든 시스템 동작은 관측 가능해야 한다.
 
 **Non-Negotiable Rules**:
-- 모든 API 요청은 Trace ID를 발급하고 모듈 간 전파해야 한다
+- 모든 API 요청은 Trace ID를 발급하고 프로젝트 간 전파해야 한다
 - 핵심 비즈니스 이벤트는 반드시 구조화된 로그로 기록해야 한다
 - 메트릭(Latency, Throughput, Error Rate)은 Prometheus 형식으로 노출해야 한다
 - 장애 발생 시 5분 이내에 원인 파악이 가능한 수준의 로깅을 유지해야 한다
-- 각 모듈은 자체 Health Check 엔드포인트를 제공해야 한다
+- 각 프로젝트는 자체 Health Check 엔드포인트를 제공해야 한다
 
 **Required Events to Log**:
 - **purchase**: SLOT_REQUESTED, SLOT_ACQUIRED, SLOT_EXPIRED, PAYMENT_COMPLETED
@@ -192,14 +267,14 @@ Examples:
 
 ### Technology Stack
 
-| Layer | Technology | Note |
-|-------|------------|------|
-| Language | Kotlin 1.9+ | Coroutines for async |
-| Framework | Spring Boot 3.x, WebFlux | Reactive stack |
-| Messaging | Apache Kafka | 모듈 간 통신 |
-| Cache | Redis | 슬롯 관리, Rate Limiting |
-| Database | PostgreSQL | 영속 데이터 |
-| Testing | JUnit 5, Kotest, k6 | 부하 테스트 포함 |
+| Layer | Technology | Version | Note |
+|-------|------------|---------|------|
+| Language | Kotlin | 1.9.25 | Coroutines for async |
+| Framework | Spring Boot | 3.5.8 | WebFlux (Reactive) |
+| Messaging | Apache Kafka | - | 프로젝트 간 통신 |
+| Cache | Redis | - | 슬롯 관리, Rate Limiting |
+| Database | 팀 자율 선택 | - | 각 프로젝트별 적합한 DB 선택 |
+| Testing | JUnit 5, Kotest, k6 | - | 부하 테스트 포함 |
 
 ### Performance Targets
 
@@ -242,12 +317,13 @@ main
 ```
 
 - 각 팀은 `{module}/{number}-{feature-name}` 형식의 브랜치 사용
-- main 브랜치 머지는 해당 모듈 팀 리드 승인 필요
+- main 브랜치 머지는 해당 프로젝트 팀 리드 승인 필요
 
 ### Code Review Checklist
 
 - [ ] 동시성 처리 패턴 적용 여부
-- [ ] 도메인 경계 준수 여부 (다른 모듈 DB 직접 접근 금지)
+- [ ] 도메인 경계 준수 여부 (다른 프로젝트 DB 직접 접근 금지)
+- [ ] 내부 모듈 의존성 규칙 준수 여부 (core → adapter → app/worker)
 - [ ] 관측 가능성 요소(로깅, 메트릭) 포함 여부
 - [ ] 부하 테스트 결과 첨부 (Critical Path)
 - [ ] 이벤트 스키마 변경 시 하위 호환성 확인
@@ -257,7 +333,7 @@ main
 ### Amendment Process
 
 1. Constitution 변경 제안은 문서화된 이유와 함께 제출
-2. **모든 모듈 팀 리드 합의** 필요 (공통 Constitution)
+2. **모든 프로젝트 팀 리드 합의** 필요 (공통 Constitution)
 3. 버전 업데이트 및 변경 이력 기록
 
 ### Versioning Policy
@@ -272,4 +348,4 @@ main
 - 원칙 위반은 반드시 문서화된 사유와 함께 예외 승인을 받아야 한다
 - 월간 Constitution 준수 현황 리뷰 수행
 
-**Version**: 1.0.0 | **Ratified**: 2025-12-23 | **Last Amended**: 2025-12-23
+**Version**: 1.1.0 | **Ratified**: 2025-12-23 | **Last Amended**: 2025-12-23
