@@ -98,27 +98,27 @@
 
 ### Core Module Mock Classes
 
-- [ ] T026 [P] [US3] Create `MockNotification.kt` in `notification/core/src/main/kotlin/com/dopaminestore/notification/core/domain/`
-- [ ] T027 [P] [US3] Create `MockUseCase.kt` interface in `notification/core/src/main/kotlin/com/dopaminestore/notification/core/usecase/`
-- [ ] T028 [P] [US3] Create `MockService.kt` in `notification/core/src/main/kotlin/com/dopaminestore/notification/core/service/`
-- [ ] T029 [P] [US3] Create `MockPort.kt` interface in `notification/core/src/main/kotlin/com/dopaminestore/notification/core/port/`
+- [x] T026 [P] [US3] Create `MockNotification.kt` in `notification/core/src/main/kotlin/com/dopaminestore/notification/core/domain/`
+- [x] T027 [P] [US3] Create `MockUseCase.kt` interface in `notification/core/src/main/kotlin/com/dopaminestore/notification/core/usecase/`
+- [x] T028 [P] [US3] Create `MockService.kt` in `notification/core/src/main/kotlin/com/dopaminestore/notification/core/service/`
+- [x] T029 [P] [US3] Create `MockPort.kt` interface in `notification/core/src/main/kotlin/com/dopaminestore/notification/core/port/`
 
 ### Adapter Module Mock Classes
 
-- [ ] T030 [US3] Create `MockRepositoryImpl.kt` implementing MockPort in `notification/adapter/src/main/kotlin/com/dopaminestore/notification/adapter/persistence/`
-- [ ] T031 [US3] Verify adapter compiles with core dependency - `./gradlew :adapter:compileKotlin`
+- [x] T030 [US3] Create `MockRepositoryImpl.kt` implementing MockPort in `notification/adapter/src/main/kotlin/com/dopaminestore/notification/adapter/persistence/`
+- [x] T031 [US3] Verify adapter compiles with core dependency - `./gradlew :adapter:compileKotlin`
 
 ### App Module Mock Classes
 
-- [ ] T032 [US3] Create `NotificationAppApplication.kt` Spring Boot main class in `notification/app/src/main/kotlin/com/dopaminestore/notification/app/`
-- [ ] T033 [US3] Create `MockController.kt` injecting MockUseCase in `notification/app/src/main/kotlin/com/dopaminestore/notification/app/controller/`
-- [ ] T034 [US3] Verify app compiles with core and adapter dependencies - `./gradlew :app:compileKotlin`
+- [x] T032 [US3] Create `NotificationAppApplication.kt` Spring Boot main class in `notification/app/src/main/kotlin/com/dopaminestore/notification/app/`
+- [x] T033 [US3] Create `MockController.kt` injecting MockUseCase in `notification/app/src/main/kotlin/com/dopaminestore/notification/app/controller/`
+- [x] T034 [US3] Verify app compiles with core and adapter dependencies - `./gradlew :app:compileKotlin`
 
 ### Worker Module Mock Classes
 
-- [ ] T035 [US3] Create `NotificationWorkerApplication.kt` Spring Boot main class in `notification/worker/src/main/kotlin/com/dopaminestore/notification/worker/`
-- [ ] T036 [US3] Create `MockConsumer.kt` injecting MockService in `notification/worker/src/main/kotlin/com/dopaminestore/notification/worker/consumer/`
-- [ ] T037 [US3] Verify worker compiles with core and adapter dependencies - `./gradlew :worker:compileKotlin`
+- [x] T035 [US3] Create `NotificationWorkerApplication.kt` Spring Boot main class in `notification/worker/src/main/kotlin/com/dopaminestore/notification/worker/`
+- [x] T036 [US3] Create `MockConsumer.kt` injecting MockService in `notification/worker/src/main/kotlin/com/dopaminestore/notification/worker/consumer/`
+- [x] T037 [US3] Verify worker compiles with core and adapter dependencies - `./gradlew :worker:compileKotlin`
 
 **Checkpoint**: 모든 Mock 클래스 컴파일 성공 - User Story 3 완료
 
@@ -128,10 +128,10 @@
 
 **Purpose**: 최종 검증 및 정리
 
-- [ ] T038 Run full build `./gradlew clean build` and verify success
-- [ ] T039 Run `./gradlew projects` and verify 4 submodules listed
-- [ ] T040 Verify quickstart.md commands work correctly
-- [ ] T041 Remove `.gitkeep` placeholder files (now have actual source files)
+- [x] T038 Run full build `./gradlew clean build` and verify success
+- [x] T039 Run `./gradlew projects` and verify 4 submodules listed
+- [x] T040 Verify quickstart.md commands work correctly
+- [x] T041 Remove `.gitkeep` placeholder files (now have actual source files)
 
 ---
 
