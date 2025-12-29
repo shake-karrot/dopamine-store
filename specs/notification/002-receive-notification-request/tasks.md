@@ -114,12 +114,12 @@ Based on Constitution module structure:
 
 **Purpose**: Edge Cases 처리 및 전체 품질 향상
 
-- [ ] T034 Implement idempotency check in all consumers using IdempotencyChecker
-- [ ] T035 [P] Add metrics for event processing latency (p99 < 50ms target)
-- [ ] T036 [P] Add consumer health check endpoint
-- [ ] T037 Configure consumer group for parallel partition processing (min 3 partitions)
-- [ ] T038 Add integration test for DLQ flow when validation fails
-- [ ] T039 Document Kafka topic and consumer configuration in README
+- [X] T034 Implement idempotency check in all consumers using IdempotencyChecker
+- [ ] T035 [P] Add metrics for event processing latency (p99 < 50ms target) - DEFERRED
+- [ ] T036 [P] Add consumer health check endpoint - DEFERRED
+- [X] T037 Configure consumer group for parallel partition processing (단건 Consumer로 변경)
+- [ ] T038 Add integration test for DLQ flow when validation fails - DEFERRED
+- [X] T039 Document Kafka topic and consumer configuration in README
 
 ---
 
