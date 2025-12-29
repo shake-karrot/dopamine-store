@@ -59,14 +59,14 @@ Based on Constitution module structure:
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Create NewUserRegisteredEvent DTO in `notification/worker/src/main/kotlin/consumer/event/NewUserRegisteredEvent.kt`
-- [ ] T015 [US1] Create NewUserRegisteredEventMapper in `notification/worker/src/main/kotlin/consumer/mapper/NewUserRegisteredEventMapper.kt`
-- [ ] T016 [US1] Implement ReceiveNotificationUseCase interface in `notification/core/src/main/kotlin/usecase/ReceiveNotificationUseCase.kt`
-- [ ] T017 [US1] Implement ReceiveNotificationService in `notification/core/src/main/kotlin/service/ReceiveNotificationService.kt`
-- [ ] T018 [US1] Create NewUserRegisteredConsumer in `notification/worker/src/main/kotlin/consumer/NewUserRegisteredConsumer.kt`
-- [ ] T019 [US1] Add validation logic for NEW_USER_REGISTERED event (userId, email required) in `notification/adapter/src/main/kotlin/validation/NewUserRegisteredValidator.kt`
-- [ ] T020 [US1] Add DLQ error handling for validation failures in `notification/worker/src/main/kotlin/consumer/handler/DlqErrorHandler.kt`
-- [ ] T021 [US1] Add structured logging for NEW_USER_REGISTERED event processing
+- [X] T014 [US1] Create NewUserRegisteredEvent DTO in `notification/adapter/src/main/kotlin/kafka/event/NewUserRegisteredEvent.kt`
+- [X] T015 [US1] Create NewUserRegisteredEventMapper in `notification/adapter/src/main/kotlin/kafka/mapper/NewUserRegisteredEventMapper.kt`
+- [X] T016 [US1] Implement ReceiveNotificationUseCase interface in `notification/core/src/main/kotlin/usecase/ReceiveNotificationUseCase.kt`
+- [X] T017 [US1] Implement ReceiveNotificationService in `notification/core/src/main/kotlin/service/ReceiveNotificationService.kt`
+- [X] T018 [US1] Create NewUserRegisteredConsumer in `notification/worker/src/main/kotlin/consumer/NewUserRegisteredConsumer.kt`
+- [X] T019 [US1] Add validation logic for NEW_USER_REGISTERED event (userId, email required) in `notification/adapter/src/main/kotlin/validation/NewUserRegisteredValidator.kt`
+- [X] T020 [US1] Add DLQ error handling for validation failures in `notification/worker/src/main/kotlin/consumer/handler/DlqErrorHandler.kt`
+- [X] T021 [US1] Add structured logging for NEW_USER_REGISTERED event processing
 
 **Checkpoint**: User Story 1 완료 - 회원가입 이벤트 수신 및 알림 요청 변환 동작
 
