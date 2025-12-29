@@ -24,9 +24,9 @@ Based on Constitution module structure:
 
 **Purpose**: Kafka Consumer 기반 인프라 구성
 
-- [ ] T001 Create Kafka configuration class in `notification/adapter/src/main/kotlin/config/KafkaConsumerConfig.kt`
-- [ ] T002 [P] Create DLQ (Dead Letter Queue) configuration in `notification/adapter/src/main/kotlin/config/DlqConfig.kt`
-- [ ] T003 [P] Define Kafka topic constants in `notification/core/src/main/kotlin/constant/KafkaTopics.kt`
+- [X] T001 Create Kafka configuration class in `notification/adapter/src/main/kotlin/config/KafkaConsumerConfig.kt`
+- [X] T002 [P] Create DLQ (Dead Letter Queue) configuration in `notification/adapter/src/main/kotlin/config/DlqConfig.kt`
+- [X] T003 [P] Define Kafka topic constants in `notification/core/src/main/kotlin/constant/KafkaTopics.kt`
 
 ---
 
