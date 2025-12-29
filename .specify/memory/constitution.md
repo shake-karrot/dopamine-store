@@ -2,20 +2,27 @@
   ============================================================================
   SYNC IMPACT REPORT
   ============================================================================
-  Version Change: 1.0.0 → 1.1.0 (MINOR - module structure & tech versions added)
+  Version Change: 1.1.0 → 1.2.0 (MINOR - module rename: purchase → product)
 
   Modified Principles: None
 
-  Added Sections:
-    - Internal Module Architecture (core, app, worker, adapter)
-    - Module Dependencies Rules
-    - Detailed tech stack versions (Spring Boot 3.5.8, Kotlin 1.9.25)
+  Added Sections: None
 
   Removed Sections: None
 
   Modified Sections:
-    - Multi-Module Structure: 내부 모듈 구조 상세화
-    - Technical Standards: 버전 명시, DB 선택 자유화
+    - Multi-Module Structure: purchase → product 모듈명 변경
+    - Module Dependencies Rules: purchase → product
+    - Branch Naming Convention: purchase → product 예시 변경
+    - Module Responsibilities: purchase → product
+    - Critical Paths by Module: purchase → product
+    - Required Events to Log: purchase → product
+    - Performance Targets: purchase → product
+    - Branch Strategy: purchase → product
+
+  Rationale:
+    - purchase 모듈이 Product, PurchaseSlot, Purchase 도메인을 담당하므로
+    - 상품(Product) 중심의 도메인 명명이 더 직관적
 
   Templates Verification:
     - .specify/templates/plan-template.md: ✅ Compatible
@@ -29,7 +36,7 @@
 
 # Dopamine Store Constitution
 
-> 이 Constitution은 모든 모듈(notification, purchase, auth)이 따라야 할 공통 원칙을 정의합니다.
+> 이 Constitution은 모든 모듈(notification, product, auth)이 따라야 할 공통 원칙을 정의합니다.
 
 ## Multi-Module Structure
 
@@ -47,7 +54,7 @@ dopamine-store/
 │
 ├── specs/                       # 모든 팀의 specification 저장소
 │   ├── notification/
-│   ├── purchase/
+│   ├── product/
 │   └── auth/
 │
 ├── notification/                # 알림 도메인 (독립 프로젝트)
@@ -58,7 +65,7 @@ dopamine-store/
 │   ├── worker/
 │   └── adapter/
 │
-├── purchase/                    # 구매 도메인 (독립 프로젝트)
+├── product/                     # 상품/구매 도메인 (독립 프로젝트)
 │   ├── build.gradle.kts
 │   ├── settings.gradle.kts
 │   ├── core/
@@ -80,7 +87,7 @@ dopamine-store/
 
 ### Internal Module Architecture
 
-각 도메인 프로젝트(notification, purchase, auth)는 동일한 내부 모듈 구조를 따른다:
+각 도메인 프로젝트(notification, product, auth)는 동일한 내부 모듈 구조를 따른다:
 
 | Module | Responsibility | Dependencies |
 |--------|----------------|--------------|
@@ -119,7 +126,7 @@ dopamine-store/
 ### Module Dependencies Rules
 
 **프로젝트 간 의존성 (MUST NOT)**:
-- notification, purchase, auth 프로젝트 간 직접 의존성 금지
+- notification, product, auth 프로젝트 간 직접 의존성 금지
 - 모든 프로젝트 간 통신은 Kafka 이벤트를 통해서만 수행
 
 **내부 모듈 간 의존성 (build.gradle.kts)**:
@@ -155,8 +162,8 @@ dependencies {
 
 Examples:
 - notification/001-alert-service
-- purchase/001-slot-acquisition
-- purchase/002-payment-flow
+- product/001-slot-acquisition
+- product/002-payment-flow
 - auth/001-user-signup
 ```
 
@@ -165,8 +172,8 @@ Examples:
 # notification 팀
 /speckit.specify 알림 발송 서비스 구현 --short-name notification/alert-service
 
-# purchase 팀
-/speckit.specify 선착순 슬롯 획득 API --short-name purchase/slot-acquisition
+# product 팀
+/speckit.specify 선착순 슬롯 획득 API --short-name product/slot-acquisition
 
 # auth 팀
 /speckit.specify 회원가입 및 로그인 --short-name auth/user-signup
@@ -177,7 +184,7 @@ Examples:
 | Module | Domains | Responsibility |
 |--------|---------|----------------|
 | **notification** | Notification | 알림 요청 수신, 스케줄링, 전송, 상태 로깅 |
-| **purchase** | Product, PurchaseSlot, Purchase | 상품 관리, 슬롯 획득/만료, 결제 처리 |
+| **product** | Product, PurchaseSlot, Purchase | 상품 관리, 슬롯 획득/만료, 결제 처리 |
 | **auth** | User, Auth | 회원가입, 로그인, 토큰 발급, 인증/인가 |
 
 ### Inter-Module Communication
@@ -226,7 +233,7 @@ Examples:
 - "완벽한 설계 후 구현"보다 "동작하는 코드 후 개선"을 우선한다
 
 **Critical Paths by Module**:
-- **purchase**: 슬롯 획득, 슬롯 만료/회수, 결제 확정
+- **product**: 슬롯 획득, 슬롯 만료/회수, 결제 확정
 - **auth**: 로그인, 토큰 검증
 - **notification**: 알림 발송 (재시도 포함)
 
@@ -244,7 +251,7 @@ Examples:
 - 각 프로젝트는 자체 Health Check 엔드포인트를 제공해야 한다
 
 **Required Events to Log**:
-- **purchase**: SLOT_REQUESTED, SLOT_ACQUIRED, SLOT_EXPIRED, PAYMENT_COMPLETED
+- **product**: SLOT_REQUESTED, SLOT_ACQUIRED, SLOT_EXPIRED, PAYMENT_COMPLETED
 - **auth**: LOGIN_SUCCESS, LOGIN_FAILED, TOKEN_ISSUED, TOKEN_REVOKED
 - **notification**: NOTIFICATION_SENT, NOTIFICATION_FAILED, NOTIFICATION_RETRIED
 
@@ -280,9 +287,9 @@ Examples:
 
 | Metric | Target | Module |
 |--------|--------|--------|
-| RPS | 100,000 | purchase (슬롯 획득) |
-| Latency p99 | < 100ms | purchase (슬롯 획득) |
-| Latency p99 | < 500ms | purchase (결제) |
+| RPS | 100,000 | product (슬롯 획득) |
+| Latency p99 | < 100ms | product (슬롯 획득) |
+| Latency p99 | < 500ms | product (결제) |
 | Latency p99 | < 200ms | auth (토큰 검증) |
 | Error Rate | < 0.1% | 전체 시스템 |
 | 동시 접속자 | 100,000 | 10시 정각 기준 |
@@ -310,8 +317,8 @@ Examples:
 main
 ├── notification/001-alert-service
 ├── notification/002-scheduled-notify
-├── purchase/001-slot-acquisition
-├── purchase/002-payment-flow
+├── product/001-slot-acquisition
+├── product/002-payment-flow
 ├── auth/001-user-signup
 └── auth/002-jwt-auth
 ```
@@ -348,4 +355,4 @@ main
 - 원칙 위반은 반드시 문서화된 사유와 함께 예외 승인을 받아야 한다
 - 월간 Constitution 준수 현황 리뷰 수행
 
-**Version**: 1.1.0 | **Ratified**: 2025-12-23 | **Last Amended**: 2025-12-23
+**Version**: 1.2.0 | **Ratified**: 2025-12-23 | **Last Amended**: 2025-12-30
