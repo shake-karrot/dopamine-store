@@ -36,16 +36,16 @@ Based on Constitution module structure:
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Create NotificationType enum in `notification/core/src/main/kotlin/domain/NotificationType.kt`
-- [ ] T005 [P] Create SendType enum (IMMEDIATE, SCHEDULED) in `notification/core/src/main/kotlin/domain/SendType.kt`
-- [ ] T006 [P] Create NotificationRequest domain entity in `notification/core/src/main/kotlin/domain/NotificationRequest.kt`
-- [ ] T007 [P] Create DomainEvent base class in `notification/core/src/main/kotlin/domain/DomainEvent.kt`
-- [ ] T008 Create EventValidator interface in `notification/core/src/main/kotlin/port/EventValidator.kt`
-- [ ] T009 [P] Create NotificationRequestPort interface (output port) in `notification/core/src/main/kotlin/port/NotificationRequestPort.kt`
-- [ ] T010 Create IdempotencyChecker interface in `notification/core/src/main/kotlin/port/IdempotencyChecker.kt`
-- [ ] T011 Implement EventValidatorImpl in `notification/adapter/src/main/kotlin/validation/EventValidatorImpl.kt`
-- [ ] T012 [P] Implement IdempotencyCheckerImpl (Redis-based) in `notification/adapter/src/main/kotlin/idempotency/IdempotencyCheckerImpl.kt`
-- [ ] T013 Create structured logging utility in `notification/core/src/main/kotlin/logging/NotificationLogger.kt`
+- [X] T004 Create NotificationType enum in `notification/core/src/main/kotlin/domain/NotificationType.kt`
+- [X] T005 [P] Create SendType enum (IMMEDIATE, SCHEDULED) in `notification/core/src/main/kotlin/domain/SendType.kt`
+- [X] T006 [P] Create NotificationRequest domain entity in `notification/core/src/main/kotlin/domain/NotificationRequest.kt`
+- [X] T007 [P] Create DomainEvent base class in `notification/core/src/main/kotlin/domain/DomainEvent.kt`
+- [X] T008 Create EventValidator interface in `notification/core/src/main/kotlin/port/EventValidator.kt`
+- [X] T009 [P] Create NotificationRequestPort interface (output port) in `notification/core/src/main/kotlin/port/NotificationRequestPort.kt`
+- [X] T010 Create IdempotencyChecker interface in `notification/core/src/main/kotlin/port/IdempotencyChecker.kt`
+- [X] T011 Implement EventValidatorImpl in `notification/adapter/src/main/kotlin/validation/EventValidatorImpl.kt`
+- [X] T012 [P] Implement IdempotencyCheckerImpl (Redis-based) in `notification/adapter/src/main/kotlin/idempotency/IdempotencyCheckerImpl.kt`
+- [X] T013 Create structured logging utility in `notification/core/src/main/kotlin/logging/NotificationLogger.kt`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
