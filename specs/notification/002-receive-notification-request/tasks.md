@@ -80,13 +80,13 @@ Based on Constitution module structure:
 
 ### Implementation for User Story 2
 
-- [ ] T022 [P] [US2] Create PurchaseSlotAcquiredEvent DTO in `notification/worker/src/main/kotlin/consumer/event/PurchaseSlotAcquiredEvent.kt`
-- [ ] T023 [US2] Create PurchaseSlotAcquiredEventMapper in `notification/worker/src/main/kotlin/consumer/mapper/PurchaseSlotAcquiredEventMapper.kt`
-- [ ] T024 [US2] Add ScheduledNotificationRequest factory method to handle expiresAt - 5min calculation in `notification/core/src/main/kotlin/domain/NotificationRequest.kt`
-- [ ] T025 [US2] Create PurchaseSlotAcquiredConsumer in `notification/worker/src/main/kotlin/consumer/PurchaseSlotAcquiredConsumer.kt`
-- [ ] T026 [US2] Add validation logic for PURCHASE_SLOT_ACQUIRED event (userId, email, expiresAt required) in `notification/adapter/src/main/kotlin/validation/PurchaseSlotAcquiredValidator.kt`
-- [ ] T027 [US2] Integrate scheduled notification creation logic into ReceiveNotificationService
-- [ ] T028 [US2] Add structured logging for PURCHASE_SLOT_ACQUIRED event processing (both immediate and scheduled)
+- [X] T022 [P] [US2] Create PurchaseSlotAcquiredEvent DTO in `notification/adapter/src/main/kotlin/kafka/event/PurchaseSlotAcquiredEvent.kt`
+- [X] T023 [US2] Create PurchaseSlotAcquiredEventMapper in `notification/adapter/src/main/kotlin/kafka/mapper/PurchaseSlotAcquiredEventMapper.kt`
+- [X] T024 [US2] Add ScheduledNotificationRequest factory method to handle expiresAt - 5min calculation in `notification/core/src/main/kotlin/domain/NotificationRequest.kt`
+- [X] T025 [US2] Create PurchaseSlotAcquiredConsumer in `notification/worker/src/main/kotlin/consumer/PurchaseSlotAcquiredConsumer.kt`
+- [X] T026 [US2] Add validation logic for PURCHASE_SLOT_ACQUIRED event (userId, email, expiresAt required) in `notification/adapter/src/main/kotlin/validation/PurchaseSlotAcquiredValidator.kt`
+- [X] T027 [US2] Integrate scheduled notification creation logic into ReceiveNotificationService
+- [X] T028 [US2] Add structured logging for PURCHASE_SLOT_ACQUIRED event processing (both immediate and scheduled)
 
 **Checkpoint**: User Story 2 완료 - 슬롯 획득 이벤트 수신 및 즉시/예약 알림 요청 생성
 
