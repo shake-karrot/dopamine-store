@@ -100,11 +100,11 @@ Based on Constitution module structure:
 
 ### Implementation for User Story 3
 
-- [ ] T029 [P] [US3] Create PasswordResetRequestedEvent DTO in `notification/worker/src/main/kotlin/consumer/event/PasswordResetRequestedEvent.kt`
-- [ ] T030 [US3] Create PasswordResetRequestedEventMapper in `notification/worker/src/main/kotlin/consumer/mapper/PasswordResetRequestedEventMapper.kt`
-- [ ] T031 [US3] Create PasswordResetRequestedConsumer in `notification/worker/src/main/kotlin/consumer/PasswordResetRequestedConsumer.kt`
-- [ ] T032 [US3] Add validation logic for PASSWORD_RESET_REQUESTED event (userId, email, resetToken required) in `notification/adapter/src/main/kotlin/validation/PasswordResetRequestedValidator.kt`
-- [ ] T033 [US3] Add structured logging for PASSWORD_RESET_REQUESTED event processing
+- [X] T029 [P] [US3] Create PasswordResetRequestedEvent DTO in `notification/adapter/src/main/kotlin/kafka/event/PasswordResetRequestedEvent.kt`
+- [X] T030 [US3] Create PasswordResetRequestedEventMapper in `notification/adapter/src/main/kotlin/kafka/mapper/PasswordResetRequestedEventMapper.kt`
+- [X] T031 [US3] Create PasswordResetRequestedConsumer in `notification/worker/src/main/kotlin/consumer/PasswordResetRequestedConsumer.kt`
+- [X] T032 [US3] Add validation logic for PASSWORD_RESET_REQUESTED event (userId, email, resetToken required) in `notification/adapter/src/main/kotlin/validation/PasswordResetRequestedValidator.kt`
+- [X] T033 [US3] Add structured logging for PASSWORD_RESET_REQUESTED event processing
 
 **Checkpoint**: User Story 3 완료 - 비밀번호 재설정 이벤트 수신 및 알림 요청 생성
 
