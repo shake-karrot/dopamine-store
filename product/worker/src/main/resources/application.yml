@@ -1,6 +1,6 @@
 spring:
   application:
-    name: product-app
+    name: product-worker
 
   # R2DBC configuration for reactive PostgreSQL access
   r2dbc:
@@ -8,20 +8,11 @@ spring:
     username: ${DB_USER:product_service}
     password: ${DB_PASSWORD:changeme}
     pool:
-      initial-size: 10
-      max-size: 20
+      initial-size: 5
+      max-size: 10
       max-idle-time: 30m
       max-acquire-time: 3s
       validation-query: SELECT 1
-
-  # Flyway configuration for database migrations
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    locations: classpath:db/migration
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:product}
-    user: ${DB_USER:product_service}
-    password: ${DB_PASSWORD:changeme}
 
   # Redis configuration for distributed state
   data:
@@ -31,28 +22,35 @@ spring:
       password: ${REDIS_PASSWORD:}
       lettuce:
         pool:
-          min-idle: 10
-          max-active: 50
+          min-idle: 5
+          max-active: 20
           max-wait: 3s
         shutdown-timeout: 200ms
 
-  # Kafka producer configuration
+  # Kafka consumer configuration
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-      acks: all
-      retries: 3
-      compression-type: lz4
-      batch-size: 16384
-      linger-ms: 10
+    consumer:
+      group-id: product-worker
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-records: 100
     properties:
       schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
+      specific.avro.reader: true
 
-# Server configuration
+# Scheduled job configuration
+scheduling:
+  slot-expiration:
+    fixed-delay: 60000  # Run every 1 minute
+  pre-expiration-notification:
+    fixed-delay: 300000  # Run every 5 minutes
+
+# Server configuration (for management endpoints only)
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8081}
   shutdown: graceful
 
 # Actuator endpoints for health checks and metrics
@@ -74,7 +72,6 @@ logging:
   level:
     root: INFO
     com.dopaminestore.product: DEBUG
-    org.springframework.r2dbc: DEBUG
-    io.r2dbc.postgresql: DEBUG
+    org.springframework.kafka: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{traceId}] - %msg%n"

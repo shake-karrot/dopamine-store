@@ -1,0 +1,51 @@
+{
+  "type": "record",
+  "name": "SlotAcquiredEvent",
+  "namespace": "com.dopaminestore.product.events",
+  "doc": "Published when a user successfully acquires a purchase slot. Consumed by Notification domain for confirmation alerts.",
+  "fields": [
+    {
+      "name": "slotId",
+      "type": "string",
+      "doc": "UUID of the acquired purchase slot"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "doc": "UUID of the user who acquired the slot"
+    },
+    {
+      "name": "productId",
+      "type": "string",
+      "doc": "UUID of the product"
+    },
+    {
+      "name": "productName",
+      "type": "string",
+      "doc": "Product name (denormalized for notification convenience)"
+    },
+    {
+      "name": "acquisitionTimestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Epoch milliseconds when slot was acquired"
+    },
+    {
+      "name": "expirationTimestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Epoch milliseconds when slot will expire (acquisition + 30 minutes)"
+    },
+    {
+      "name": "traceId",
+      "type": "string",
+      "doc": "Distributed trace ID for request correlation"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for evolution tracking"
+    }
+  ]
+}

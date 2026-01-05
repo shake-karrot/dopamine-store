@@ -1,0 +1,55 @@
+{
+  "type": "record",
+  "name": "PaymentCompletedEvent",
+  "namespace": "com.dopaminestore.product.events",
+  "doc": "Event published when payment is successfully completed for a purchase slot",
+  "fields": [
+    {
+      "name": "purchaseId",
+      "type": "string",
+      "doc": "Unique purchase identifier (UUID)"
+    },
+    {
+      "name": "slotId",
+      "type": "string",
+      "doc": "Purchase slot that was paid for (UUID)"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "doc": "User who completed the payment (UUID)"
+    },
+    {
+      "name": "productId",
+      "type": "string",
+      "doc": "Product that was purchased (UUID)"
+    },
+    {
+      "name": "paymentStatus",
+      "type": "string",
+      "doc": "Payment status: SUCCESS or FAILED"
+    },
+    {
+      "name": "amount",
+      "type": "double",
+      "doc": "Payment amount"
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "KRW",
+      "doc": "ISO 4217 currency code"
+    },
+    {
+      "name": "confirmationTimestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "When payment was confirmed (epoch milliseconds)"
+    },
+    {
+      "name": "traceId",
+      "type": "string",
+      "doc": "Distributed trace ID for request correlation"
+    }
+  ]
+}

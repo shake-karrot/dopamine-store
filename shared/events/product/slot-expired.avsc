@@ -1,0 +1,40 @@
+{
+  "type": "record",
+  "name": "SlotExpiredEvent",
+  "namespace": "com.dopaminestore.product.events",
+  "doc": "Event published when a purchase slot expires and stock is reclaimed",
+  "fields": [
+    {
+      "name": "slotId",
+      "type": "string",
+      "doc": "Purchase slot identifier that expired (UUID)"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "doc": "User who held the expired slot (UUID)"
+    },
+    {
+      "name": "productId",
+      "type": "string",
+      "doc": "Product for which slot expired (UUID)"
+    },
+    {
+      "name": "expirationTimestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "When the slot expired (epoch milliseconds)"
+    },
+    {
+      "name": "reclaimStatus",
+      "type": "string",
+      "default": "AUTO_EXPIRED",
+      "doc": "Reason for expiration: AUTO_EXPIRED or MANUAL_RECLAIMED"
+    },
+    {
+      "name": "traceId",
+      "type": "string",
+      "doc": "Distributed trace ID for request correlation"
+    }
+  ]
+}
