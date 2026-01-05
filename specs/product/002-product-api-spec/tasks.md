@@ -106,7 +106,7 @@ This task list implements the Product Domain API & Business Logic feature, deliv
 
 ### Unit & Integration Tests
 
-- [ ] [T038a] [US1] Create SlotAcquisitionServiceTest in `product/core/src/test/kotlin/com/dopaminestore/product/core/service/SlotAcquisitionServiceTest.kt` with mocked repositories
+- [X] [T038a] [US1] Create SlotAcquisitionServiceTest in `product/core/src/test/kotlin/com/dopaminestore/product/core/service/SlotAcquisitionServiceTest.kt` with mocked repositories (8 test cases)
 - [ ] [T038b] [US1] Create RedisSlotCacheImplTest in `product/adapter/src/test/kotlin/com/dopaminestore/product/adapter/redis/RedisSlotCacheImplTest.kt` with embedded Redis
 - [ ] [T038c] [US1] Create ProductRepositoryImplTest in `product/adapter/src/test/kotlin/com/dopaminestore/product/adapter/persistence/ProductRepositoryImplTest.kt` with Testcontainers PostgreSQL
 - [ ] [T038d] [US1] Create SlotAcquisitionIntegrationTest in `product/tests/src/test/kotlin/com/dopaminestore/product/integration/SlotAcquisitionIntegrationTest.kt` with end-to-end flow
