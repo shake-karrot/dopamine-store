@@ -12,6 +12,9 @@ dependencies {
     // Spring Boot WebFlux for reactive REST API
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
+    // Validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")

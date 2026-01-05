@@ -44,6 +44,9 @@ dependencies {
     // WebFlux for reactive web (needed for WebFilter in TracingConfig)
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
+    // Reactor Kotlin extensions for better Kotlin support
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.3")
+
     // Apache Commons Pool2 for Redis connection pooling
     implementation("org.apache.commons:commons-pool2:2.11.1")
 
