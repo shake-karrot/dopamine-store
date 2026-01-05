@@ -1,0 +1,850 @@
+openapi: 3.0.3
+info:
+  title: Product Domain API
+  description: |
+    Dopamine Store Product Domain REST API for managing products, purchase slots, and payments.
+
+    **Key Features**:
+    - Product CRUD (Admin only)
+    - First-come-first-served slot acquisition (100K RPS capable)
+    - Payment processing with slot validation
+
+    **Constitution Compliance**:
+    - All responses include X-Trace-ID header for distributed tracing
+    - Error responses follow RFC 7807 Problem Details format
+    - Rate limiting: 10 requests per second per user (enforced at API gateway)
+  version: 1.0.0
+  contact:
+    name: Product Team
+    email: product-team@dopaminestore.com
+
+servers:
+  - url: https://api.dopaminestore.com/product/v1
+    description: Production
+  - url: https://api-staging.dopaminestore.com/product/v1
+    description: Staging
+  - url: http://localhost:8080/product/v1
+    description: Local Development
+
+tags:
+  - name: Products
+    description: Product management operations (Admin only)
+  - name: Slots
+    description: Purchase slot acquisition and management (Buyers)
+  - name: Payments
+    description: Payment processing for acquired slots
+  - name: Health
+    description: Service health monitoring
+
+paths:
+  # ====================
+  # Product Management (Admin)
+  # ====================
+  /products:
+    get:
+      tags: [Products]
+      summary: List all products
+      description: Retrieve paginated list of products with filtering by status
+      operationId: listProducts
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [UPCOMING, ON_SALE, SOLD_OUT]
+          description: Filter by product status
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Successfully retrieved products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
+          headers:
+            X-Trace-ID:
+              $ref: '#/components/headers/X-Trace-ID'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      tags: [Products]
+      summary: Create new product
+      description: Create a new product (Admin only). Requires authentication with admin role.
+      operationId: createProduct
+      security:
+        - bearerAuth: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+          headers:
+            X-Trace-ID:
+              $ref: '#/components/headers/X-Trace-ID'
+            Location:
+              description: URI of the created product
+              schema:
+                type: string
+                example: /products/123e4567-e89b-12d3-a456-426614174000
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /products/{productId}:
+    get:
+      tags: [Products]
+      summary: Get product by ID
+      operationId: getProduct
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+          headers:
+            X-Trace-ID:
+              $ref: '#/components/headers/X-Trace-ID'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      tags: [Products]
+      summary: Update product
+      description: Update product details (Admin only). Stock can only be increased. Sale date cannot be changed if slots exist.
+      operationId: updateProduct
+      security:
+        - bearerAuth: [admin]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+          headers:
+            X-Trace-ID:
+              $ref: '#/components/headers/X-Trace-ID'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Conflict - Cannot modify product due to existing constraints
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                type: "https://api.dopaminestore.com/problems/product-update-conflict"
+                title: "Product Update Conflict"
+                status: 409
+                detail: "Cannot change sale_date because 15 active purchase slots exist"
+                instance: "/products/123e4567-e89b-12d3-a456-426614174000"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      tags: [Products]
+      summary: Delete product
+      description: Delete product (Admin only). Blocked if active slots exist.
+      operationId: deleteProduct
+      security:
+        - bearerAuth: [admin]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '204':
+          description: Product deleted successfully
+          headers:
+            X-Trace-ID:
+              $ref: '#/components/headers/X-Trace-ID'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Conflict - Cannot delete product with active slots
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                type: "https://api.dopaminestore.com/problems/product-delete-conflict"
+                title: "Product Deletion Blocked"
+                status: 409
+                detail: "Cannot delete product with 5 active purchase slots"
+                instance: "/products/123e4567-e89b-12d3-a456-426614174000"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ====================
+  # Purchase Slots (Buyers)
+  # ====================
+  /slots/acquire:
+    post:
+      tags: [Slots]
+      summary: Acquire purchase slot
+      description: |
+        Attempt to acquire a purchase slot for a product (first-come-first-served).
+
+        **Performance**: p99 < 100ms under 100K RPS load.
+
+        **Fairness**: Slots granted in strict arrival-time order.
+
+        **Duplicate Prevention**: One active slot per user per product.
+      operationId: acquireSlot
+      security:
+        - bearerAuth: [buyer]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcquireSlotRequest'
+      responses:
+        '201':
+          description: Slot acquired successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotResponse'
+          headers:
+            X-Trace-ID:
+              $ref: '#/components/headers/X-Trace-ID'
+            Location:
+              description: URI of the acquired slot
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: Conflict - Duplicate request or sold out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              examples:
+                sold_out:
+                  value:
+                    type: "https://api.dopaminestore.com/problems/sold-out"
+                    title: "Product Sold Out"
+                    status: 409
+                    detail: "All 100 purchase slots have been claimed"
+                    instance: "/slots/acquire"
+                duplicate:
+                  value:
+                    type: "https://api.dopaminestore.com/problems/duplicate-slot"
+                    title: "Duplicate Slot Request"
+                    status: 409
+                    detail: "You already have an active slot for this product"
+                    instance: "/slots/acquire"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /slots/my-slots:
+    get:
+      tags: [Slots]
+      summary: List my purchase slots
+      description: Retrieve all purchase slots for the authenticated user
+      operationId: listMySlots
+      security:
+        - bearerAuth: [buyer]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [ACTIVE, EXPIRED, COMPLETED]
+          description: Filter by slot status
+      responses:
+        '200':
+          description: Successfully retrieved user's slots
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  slots:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SlotResponse'
+                  totalCount:
+                    type: integer
+                    example: 5
+          headers:
+            X-Trace-ID:
+              $ref: '#/components/headers/X-Trace-ID'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /slots/{slotId}:
+    get:
+      tags: [Slots]
+      summary: Get slot details
+      operationId: getSlot
+      security:
+        - bearerAuth: [buyer]
+      parameters:
+        - $ref: '#/components/parameters/SlotId'
+      responses:
+        '200':
+          description: Slot details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotResponse'
+          headers:
+            X-Trace-ID:
+              $ref: '#/components/headers/X-Trace-ID'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden - Slot belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ====================
+  # Payments
+  # ====================
+  /payments:
+    post:
+      tags: [Payments]
+      summary: Initiate payment
+      description: |
+        Initiate payment for an acquired purchase slot.
+
+        **Validation**: Slot must be ACTIVE and not expired.
+
+        **Idempotency**: Include idempotency_key to prevent duplicate charges.
+      operationId: initiatePayment
+      security:
+        - bearerAuth: [buyer]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessPaymentRequest'
+      responses:
+        '201':
+          description: Payment initiated (async processing)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+          headers:
+            X-Trace-ID:
+              $ref: '#/components/headers/X-Trace-ID'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Slot not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: Conflict - Slot expired or already completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              examples:
+                expired:
+                  value:
+                    type: "https://api.dopaminestore.com/problems/slot-expired"
+                    title: "Slot Expired"
+                    status: 409
+                    detail: "Purchase slot expired at 2026-01-05T10:30:00Z"
+                    instance: "/payments"
+                completed:
+                  value:
+                    type: "https://api.dopaminestore.com/problems/slot-already-completed"
+                    title: "Slot Already Completed"
+                    status: 409
+                    detail: "Payment already processed for this slot"
+                    instance: "/payments"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /payments/{paymentId}:
+    get:
+      tags: [Payments]
+      summary: Get payment status
+      operationId: getPaymentStatus
+      security:
+        - bearerAuth: [buyer]
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Payment details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+          headers:
+            X-Trace-ID:
+              $ref: '#/components/headers/X-Trace-ID'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden - Payment belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ====================
+  # Health
+  # ====================
+  /health:
+    get:
+      tags: [Health]
+      summary: Health check
+      description: Service health status (no authentication required)
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [UP, DOWN, DEGRADED]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  components:
+                    type: object
+                    properties:
+                      database:
+                        $ref: '#/components/schemas/HealthComponent'
+                      redis:
+                        $ref: '#/components/schemas/HealthComponent'
+                      kafka:
+                        $ref: '#/components/schemas/HealthComponent'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: DOWN
+                  timestamp:
+                    type: string
+                    format: date-time
+
+# ====================
+# Components
+# ====================
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token from Auth domain
+
+  parameters:
+    ProductId:
+      name: productId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Product UUID
+
+    SlotId:
+      name: slotId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Purchase Slot UUID
+
+  headers:
+    X-Trace-ID:
+      description: Distributed trace ID for request correlation
+      schema:
+        type: string
+        example: "trace-1234567890-abcdef"
+
+  schemas:
+    # ====================
+    # Product Schemas
+    # ====================
+    CreateProductRequest:
+      type: object
+      required: [name, description, stock, saleDate]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: "Limited Edition Sneakers"
+        description:
+          type: string
+          minLength: 1
+          maxLength: 2000
+          example: "Exclusive collaboration with top designer. Only 100 pairs available worldwide."
+        stock:
+          type: integer
+          minimum: 1
+          example: 100
+        saleDate:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp with timezone
+          example: "2026-01-06T10:00:00Z"
+
+    UpdateProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        stockIncrement:
+          type: integer
+          minimum: 0
+          description: Amount to add to current stock (cannot decrease)
+          example: 50
+
+    ProductResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        stock:
+          type: integer
+          description: Current available stock
+        initialStock:
+          type: integer
+          description: Original stock quantity
+        saleDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [UPCOMING, ON_SALE, SOLD_OUT]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProductListResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductResponse'
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+
+    # ====================
+    # Slot Schemas
+    # ====================
+    AcquireSlotRequest:
+      type: object
+      required: [productId]
+      properties:
+        productId:
+          type: string
+          format: uuid
+
+    SlotResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        productName:
+          type: string
+          description: Denormalized for convenience
+        userId:
+          type: string
+          format: uuid
+        acquisitionTimestamp:
+          type: string
+          format: date-time
+        expirationTimestamp:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [ACTIVE, EXPIRED, COMPLETED]
+        remainingTimeSeconds:
+          type: integer
+          description: Time remaining until expiration (0 if expired)
+          example: 1567
+        createdAt:
+          type: string
+          format: date-time
+
+    # ====================
+    # Payment Schemas
+    # ====================
+    ProcessPaymentRequest:
+      type: object
+      required: [purchaseSlotId, idempotencyKey, amount, paymentMethod]
+      properties:
+        purchaseSlotId:
+          type: string
+          format: uuid
+        idempotencyKey:
+          type: string
+          format: uuid
+          description: Client-generated UUID for duplicate prevention
+        amount:
+          type: number
+          format: decimal
+          minimum: 0.01
+          example: 259000.00
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: "KRW"
+          example: "KRW"
+        paymentMethod:
+          type: string
+          enum: [CARD, BANK_TRANSFER, WALLET]
+
+    PaymentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        purchaseSlotId:
+          type: string
+          format: uuid
+        paymentId:
+          type: string
+          description: External gateway payment ID
+        paymentStatus:
+          type: string
+          enum: [PENDING, SUCCESS, FAILED]
+        amount:
+          type: number
+          format: decimal
+        currency:
+          type: string
+        paymentMethod:
+          type: string
+          enum: [CARD, BANK_TRANSFER, WALLET]
+        confirmationTimestamp:
+          type: string
+          format: date-time
+          nullable: true
+        failureReason:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # ====================
+    # Health Schemas
+    # ====================
+    HealthComponent:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [UP, DOWN, DEGRADED]
+        details:
+          type: object
+          additionalProperties: true
+
+    # ====================
+    # Error Schemas (RFC 7807)
+    # ====================
+    ProblemDetail:
+      type: object
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI reference identifying the problem type
+          example: "https://api.dopaminestore.com/problems/not-found"
+        title:
+          type: string
+          description: Short, human-readable summary
+          example: "Product Not Found"
+        status:
+          type: integer
+          description: HTTP status code
+          example: 404
+        detail:
+          type: string
+          description: Detailed explanation specific to this occurrence
+          example: "No product found with ID: 123e4567-e89b-12d3-a456-426614174000"
+        instance:
+          type: string
+          format: uri
+          description: URI reference identifying the specific occurrence
+          example: "/products/123e4567-e89b-12d3-a456-426614174000"
+        traceId:
+          type: string
+          description: Distributed trace ID for debugging
+          example: "trace-1234567890-abcdef"
+
+  responses:
+    BadRequest:
+      description: Bad Request - Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+      headers:
+        X-Trace-ID:
+          $ref: '#/components/headers/X-Trace-ID'
+
+    Unauthorized:
+      description: Unauthorized - Missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+      headers:
+        X-Trace-ID:
+          $ref: '#/components/headers/X-Trace-ID'
+
+    Forbidden:
+      description: Forbidden - Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+      headers:
+        X-Trace-ID:
+          $ref: '#/components/headers/X-Trace-ID'
+
+    NotFound:
+      description: Not Found - Resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+      headers:
+        X-Trace-ID:
+          $ref: '#/components/headers/X-Trace-ID'
+
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+      headers:
+        X-Trace-ID:
+          $ref: '#/components/headers/X-Trace-ID'

@@ -1,0 +1,51 @@
+{
+  "type": "record",
+  "name": "SlotExpiringSoonEvent",
+  "namespace": "com.dopaminestore.product.events",
+  "doc": "Published 5 minutes before a slot expires to alert the user. Consumed by Notification domain for pre-expiration warnings.",
+  "fields": [
+    {
+      "name": "slotId",
+      "type": "string",
+      "doc": "UUID of the expiring purchase slot"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "doc": "UUID of the user whose slot is expiring soon"
+    },
+    {
+      "name": "productId",
+      "type": "string",
+      "doc": "UUID of the product"
+    },
+    {
+      "name": "productName",
+      "type": "string",
+      "doc": "Product name (denormalized for notification convenience)"
+    },
+    {
+      "name": "expirationTimestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Epoch milliseconds when slot will expire"
+    },
+    {
+      "name": "minutesRemaining",
+      "type": "int",
+      "default": 5,
+      "doc": "Minutes remaining until expiration (typically 5)"
+    },
+    {
+      "name": "traceId",
+      "type": "string",
+      "doc": "Distributed trace ID for request correlation"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for evolution tracking"
+    }
+  ]
+}

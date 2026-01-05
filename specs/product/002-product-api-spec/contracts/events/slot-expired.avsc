@@ -1,0 +1,55 @@
+{
+  "type": "record",
+  "name": "SlotExpiredEvent",
+  "namespace": "com.dopaminestore.product.events",
+  "doc": "Published when a purchase slot expires (auto-expiration after 30 minutes or manual reclamation). Consumed by Notification domain for expiration alerts and audit logging.",
+  "fields": [
+    {
+      "name": "slotId",
+      "type": "string",
+      "doc": "UUID of the expired purchase slot"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "doc": "UUID of the user whose slot expired"
+    },
+    {
+      "name": "productId",
+      "type": "string",
+      "doc": "UUID of the product"
+    },
+    {
+      "name": "productName",
+      "type": "string",
+      "doc": "Product name (denormalized for notification convenience)"
+    },
+    {
+      "name": "expirationTimestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Epoch milliseconds when slot expired"
+    },
+    {
+      "name": "reclaimStatus",
+      "type": {
+        "type": "enum",
+        "name": "ReclaimStatus",
+        "symbols": ["AUTO_EXPIRED", "MANUAL_RECLAIMED"]
+      },
+      "default": "AUTO_EXPIRED",
+      "doc": "How the slot was reclaimed: AUTO_EXPIRED (30-min timeout) or MANUAL_RECLAIMED (admin action)"
+    },
+    {
+      "name": "traceId",
+      "type": "string",
+      "doc": "Distributed trace ID for request correlation"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for evolution tracking"
+    }
+  ]
+}

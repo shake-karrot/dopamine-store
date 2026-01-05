@@ -1,0 +1,75 @@
+{
+  "type": "record",
+  "name": "PaymentCompletedEvent",
+  "namespace": "com.dopaminestore.product.events",
+  "doc": "Published when a payment is successfully completed for a purchase slot. Consumed by Notification domain for purchase confirmation alerts and Auth domain for user activity tracking.",
+  "fields": [
+    {
+      "name": "purchaseId",
+      "type": "string",
+      "doc": "UUID of the purchase record"
+    },
+    {
+      "name": "slotId",
+      "type": "string",
+      "doc": "UUID of the associated purchase slot"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "doc": "UUID of the user who completed payment"
+    },
+    {
+      "name": "productId",
+      "type": "string",
+      "doc": "UUID of the purchased product"
+    },
+    {
+      "name": "productName",
+      "type": "string",
+      "doc": "Product name (denormalized for notification convenience)"
+    },
+    {
+      "name": "paymentId",
+      "type": "string",
+      "doc": "External payment gateway reference ID"
+    },
+    {
+      "name": "amount",
+      "type": "double",
+      "doc": "Payment amount (decimal represented as double for Avro compatibility)"
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "KRW",
+      "doc": "ISO 4217 currency code"
+    },
+    {
+      "name": "paymentMethod",
+      "type": {
+        "type": "enum",
+        "name": "PaymentMethod",
+        "symbols": ["CARD", "BANK_TRANSFER", "WALLET"]
+      },
+      "doc": "Payment method used"
+    },
+    {
+      "name": "confirmationTimestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Epoch milliseconds when payment was confirmed"
+    },
+    {
+      "name": "traceId",
+      "type": "string",
+      "doc": "Distributed trace ID for request correlation"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for evolution tracking"
+    }
+  ]
+}
