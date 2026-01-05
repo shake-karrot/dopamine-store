@@ -8,6 +8,10 @@ dependencies {
 
     // Reactor Core for reactive types (Mono/Flux) in ports
     implementation("io.projectreactor:reactor-core:3.6.11")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.3")
+
+    // Logging
+    implementation("org.slf4j:slf4j-api:2.0.9")
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")

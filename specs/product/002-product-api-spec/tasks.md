@@ -3,7 +3,7 @@
 **Feature Branch**: `product/002-product-api-spec`
 **Status**: 🟡 In Progress
 **Created**: 2026-01-05
-**Last Updated**: 2026-01-05
+**Last Updated**: 2026-01-06
 
 ## Overview
 
@@ -80,29 +80,29 @@ This task list implements the Product Domain API & Business Logic feature, deliv
 
 ---
 
-## Phase 3: US1 - Slot Acquisition (P1 - MVP)
+## Phase 3: US1 - Slot Acquisition (P1 - MVP) ✅ COMPLETE
 
 **User Story**: First-Come-First-Served Slot Acquisition (100K RPS)
 
-### Core Business Logic
+### Core Business Logic ✅ COMPLETE
 
-- [ ] [T028] [US1] Create SlotAcquisitionUseCase interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/usecase/SlotAcquisitionUseCase.kt`
-- [ ] [T029] [US1] Implement SlotAcquisitionService in `product/core/src/main/kotlin/com/dopaminestore/product/core/service/SlotAcquisitionService.kt` with duplicate check and fairness guarantee
-- [ ] [T030] [US1] Implement arrival-time ordering logic using Redis ZSET scores in SlotAcquisitionService
+- [X] [T028] [US1] Create SlotAcquisitionUseCase interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/usecase/SlotAcquisitionUseCase.kt`
+- [X] [T029] [US1] Implement SlotAcquisitionService in `product/core/src/main/kotlin/com/dopaminestore/product/core/service/SlotAcquisitionService.kt` with duplicate check and fairness guarantee
+- [X] [T030] [US1] Implement arrival-time ordering logic using Redis ZSET scores in SlotAcquisitionService
 
-### Adapter Implementations
+### Adapter Implementations ✅ COMPLETE
 
-- [ ] [T031] [US1] Implement RedisSlotCacheImpl in `product/adapter/src/main/kotlin/com/dopaminestore/product/adapter/redis/RedisSlotCacheImpl.kt` with Lua script execution
-- [ ] [T032] [US1] Implement ProductRepositoryImpl in `product/adapter/src/main/kotlin/com/dopaminestore/product/adapter/persistence/ProductRepositoryImpl.kt` using R2DBC
-- [ ] [T033] [US1] Implement PurchaseSlotRepositoryImpl in `product/adapter/src/main/kotlin/com/dopaminestore/product/adapter/persistence/PurchaseSlotRepositoryImpl.kt`
-- [ ] [T034] [US1] Implement EventPublisherImpl in `product/adapter/src/main/kotlin/com/dopaminestore/product/adapter/kafka/EventPublisherImpl.kt` with trace ID propagation
+- [X] [T031] [US1] Implement RedisSlotCacheImpl in `product/adapter/src/main/kotlin/com/dopaminestore/product/adapter/redis/RedisSlotCacheImpl.kt` with Lua script execution
+- [X] [T032] [US1] Implement ProductRepositoryImpl in `product/adapter/src/main/kotlin/com/dopaminestore/product/adapter/persistence/ProductRepositoryImpl.kt` using R2DBC (added V005 migration for price column)
+- [X] [T033] [US1] Implement PurchaseSlotRepositoryImpl in `product/adapter/src/main/kotlin/com/dopaminestore/product/adapter/persistence/PurchaseSlotRepositoryImpl.kt`
+- [X] [T034] [US1] Implement EventPublisherImpl in `product/adapter/src/main/kotlin/com/dopaminestore/product/adapter/kafka/EventPublisherImpl.kt` with trace ID propagation
 
-### REST API Endpoint
+### REST API Endpoint ✅ COMPLETE
 
-- [ ] [T035] [US1] Create SlotController in `product/app/src/main/kotlin/com/dopaminestore/product/app/controller/SlotController.kt` with POST /slots/acquire endpoint
-- [ ] [T036] [US1] Create SlotAcquireRequest DTO in `product/app/src/main/kotlin/com/dopaminestore/product/app/dto/SlotAcquireRequest.kt`
-- [ ] [T037] [US1] Create SlotResponse DTO in `product/app/src/main/kotlin/com/dopaminestore/product/app/dto/SlotResponse.kt` with remainingTimeSeconds
-- [ ] [T038] [US1] Implement error handling for sold-out and duplicate requests with RFC 7807 Problem Details format
+- [X] [T035] [US1] Create SlotController in `product/app/src/main/kotlin/com/dopaminestore/product/app/controller/SlotController.kt` with POST /slots/acquire endpoint
+- [X] [T036] [US1] Create SlotAcquireRequest DTO in `product/app/src/main/kotlin/com/dopaminestore/product/app/dto/SlotDtos.kt` (AcquireSlotRequest)
+- [X] [T037] [US1] Create SlotResponse DTO in `product/app/src/main/kotlin/com/dopaminestore/product/app/dto/SlotDtos.kt` (AcquireSlotResponse with remainingSeconds)
+- [X] [T038] [US1] Implement error handling for sold-out and duplicate requests with RFC 7807 Problem Details format
 
 ### Unit & Integration Tests
 
