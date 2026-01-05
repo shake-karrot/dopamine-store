@@ -46,27 +46,37 @@ This task list implements the Product Domain API & Business Logic feature, deliv
 
 ---
 
-## Phase 2: Domain Core (US3 Dependencies)
+## Phase 2: Domain Core (US3 Dependencies) ✅ COMPLETE
 
-### Domain Entities
+### Domain Entities ✅ COMPLETE
 
-- [ ] [T017] [P] Create Product entity in `product/core/src/main/kotlin/com/dopaminestore/product/core/domain/Product.kt` with status computation
-- [ ] [T018] [P] Create PurchaseSlot entity in `product/core/src/main/kotlin/com/dopaminestore/product/core/domain/PurchaseSlot.kt` with state transitions
-- [ ] [T019] [P] Create Purchase entity in `product/core/src/main/kotlin/com/dopaminestore/product/core/domain/Purchase.kt` with payment status
-- [ ] [T020] [P] Create domain value objects (Money, ProductStatus, SlotStatus, PaymentStatus) in `product/core/src/main/kotlin/com/dopaminestore/product/core/domain/value/`
+- [X] [T017] [P] Create Product entity in `product/core/src/main/kotlin/com/dopaminestore/product/core/domain/Product.kt` with status computation
+- [X] [T018] [P] Create PurchaseSlot entity in `product/core/src/main/kotlin/com/dopaminestore/product/core/domain/PurchaseSlot.kt` with state transitions
+- [X] [T019] [P] Create Purchase entity in `product/core/src/main/kotlin/com/dopaminestore/product/core/domain/Purchase.kt` with payment status
+- [X] [T020] [P] Create domain value objects (Money, ProductStatus, SlotStatus, PaymentStatus) in `product/core/src/main/kotlin/com/dopaminestore/product/core/domain/value/`
 
-### Repository Ports (Interfaces)
+### Repository Ports (Interfaces) ✅ COMPLETE
 
-- [ ] [T021] [P] Create ProductRepository port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/ProductRepository.kt`
-- [ ] [T022] [P] Create PurchaseSlotRepository port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/PurchaseSlotRepository.kt`
-- [ ] [T023] [P] Create PurchaseRepository port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/PurchaseRepository.kt`
-- [ ] [T024] [P] Create SlotAuditRepository port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/SlotAuditRepository.kt`
+- [X] [T021] [P] Create ProductRepository port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/ProductRepository.kt`
+- [X] [T022] [P] Create PurchaseSlotRepository port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/PurchaseSlotRepository.kt`
+- [X] [T023] [P] Create PurchaseRepository port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/PurchaseRepository.kt`
+- [X] [T024] [P] Create SlotAuditRepository port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/SlotAuditRepository.kt`
 
-### External Service Ports
+### External Service Ports ✅ COMPLETE
 
-- [ ] [T025] [P] Create RedisSlotCache port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/RedisSlotCache.kt` for fairness queue operations
-- [ ] [T026] [P] Create EventPublisher port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/EventPublisher.kt` for Kafka events
-- [ ] [T027] [P] Create PaymentGateway port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/PaymentGateway.kt` for payment processing
+- [X] [T025] [P] Create RedisSlotCache port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/RedisSlotCache.kt` for fairness queue operations
+- [X] [T026] [P] Create EventPublisher port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/EventPublisher.kt` for Kafka events
+- [X] [T027] [P] Create PaymentGateway port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/PaymentGateway.kt` for payment processing
+
+### Unit Tests (Domain Layer) ✅ COMPLETE
+
+- [X] [T027a] [P] Create Money value object tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/MoneyTest.kt` with arithmetic operations and validation (31 test cases)
+- [X] [T027b] [P] Create ProductStatus tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/ProductStatusTest.kt` with status computation (10 test cases)
+- [X] [T027c] [P] Create SlotStatus tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/SlotStatusTest.kt` with state transitions (10 test cases)
+- [X] [T027d] [P] Create PaymentStatus tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/PaymentStatusTest.kt` with validation (10 test cases)
+- [X] [T027e] [P] Create Product entity tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/ProductTest.kt` with stock management and status computation (18 test cases)
+- [X] [T027f] [P] Create PurchaseSlot entity tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/PurchaseSlotTest.kt` with expiration and state transitions (21 test cases)
+- [X] [T027g] [P] Create Purchase entity tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/PurchaseTest.kt` with payment status transitions (19 test cases)
 
 ---
 
@@ -93,6 +103,15 @@ This task list implements the Product Domain API & Business Logic feature, deliv
 - [ ] [T036] [US1] Create SlotAcquireRequest DTO in `product/app/src/main/kotlin/com/dopaminestore/product/app/dto/SlotAcquireRequest.kt`
 - [ ] [T037] [US1] Create SlotResponse DTO in `product/app/src/main/kotlin/com/dopaminestore/product/app/dto/SlotResponse.kt` with remainingTimeSeconds
 - [ ] [T038] [US1] Implement error handling for sold-out and duplicate requests with RFC 7807 Problem Details format
+
+### Unit & Integration Tests
+
+- [ ] [T038a] [US1] Create SlotAcquisitionServiceTest in `product/core/src/test/kotlin/com/dopaminestore/product/core/service/SlotAcquisitionServiceTest.kt` with mocked repositories
+- [ ] [T038b] [US1] Create RedisSlotCacheImplTest in `product/adapter/src/test/kotlin/com/dopaminestore/product/adapter/redis/RedisSlotCacheImplTest.kt` with embedded Redis
+- [ ] [T038c] [US1] Create ProductRepositoryImplTest in `product/adapter/src/test/kotlin/com/dopaminestore/product/adapter/persistence/ProductRepositoryImplTest.kt` with Testcontainers PostgreSQL
+- [ ] [T038d] [US1] Create SlotAcquisitionIntegrationTest in `product/tests/src/test/kotlin/com/dopaminestore/product/integration/SlotAcquisitionIntegrationTest.kt` with end-to-end flow
+- [ ] [T038e] [US1] Test duplicate prevention with concurrent requests
+- [ ] [T038f] [US1] Test fairness guarantee with arrival-time ordering verification
 
 ### Load Testing
 
@@ -131,6 +150,15 @@ This task list implements the Product Domain API & Business Logic feature, deliv
 - [ ] [T053] [US2] Implement SlotAuditRepositoryImpl in `product/adapter/src/main/kotlin/com/dopaminestore/product/adapter/persistence/SlotAuditRepositoryImpl.kt`
 - [ ] [T054] [US2] Log all slot state transitions (ACTIVE → EXPIRED) with trace IDs
 
+### Unit & Integration Tests
+
+- [ ] [T054a] [US2] [P] Create SlotExpirationServiceTest in `product/core/src/test/kotlin/com/dopaminestore/product/core/service/SlotExpirationServiceTest.kt` with mocked repositories
+- [ ] [T054b] [US2] [P] Create SlotExpirationJobTest in `product/worker/src/test/kotlin/com/dopaminestore/product/worker/job/SlotExpirationJobTest.kt` with scheduled execution
+- [ ] [T054c] [US2] [P] Create PreExpirationNotificationJobTest in `product/worker/src/test/kotlin/com/dopaminestore/product/worker/job/PreExpirationNotificationJobTest.kt`
+- [ ] [T054d] [US2] Create SlotExpirationIntegrationTest in `product/tests/src/test/kotlin/com/dopaminestore/product/integration/SlotExpirationIntegrationTest.kt` with 30-minute timeout verification
+- [ ] [T054e] [US2] Test atomic stock reclamation with concurrent expirations
+- [ ] [T054f] [US2] Test audit log completeness for all state transitions
+
 ---
 
 ## Phase 5: US3 - Product Management (P3)
@@ -160,6 +188,15 @@ This task list implements the Product Domain API & Business Logic feature, deliv
 - [ ] [T067] [US3] [P] Create UpdateProductRequest DTO in `product/app/src/main/kotlin/com/dopaminestore/product/app/dto/UpdateProductRequest.kt`
 - [ ] [T068] [US3] [P] Create ProductResponse DTO in `product/app/src/main/kotlin/com/dopaminestore/product/app/dto/ProductResponse.kt` with computed status
 - [ ] [T069] [US3] [P] Create ProductListResponse DTO with pagination metadata
+
+### Unit & Integration Tests
+
+- [ ] [T069a] [US3] [P] Create ProductManagementServiceTest in `product/core/src/test/kotlin/com/dopaminestore/product/core/service/ProductManagementServiceTest.kt` with validation rules
+- [ ] [T069b] [US3] [P] Create ProductControllerTest in `product/app/src/test/kotlin/com/dopaminestore/product/app/controller/ProductControllerTest.kt` with WebTestClient
+- [ ] [T069c] [US3] Test admin authorization for POST/PUT/DELETE endpoints
+- [ ] [T069d] [US3] Test pagination with large product catalogs (1000+ products)
+- [ ] [T069e] [US3] Test conflict handling when deleting product with active slots
+- [ ] [T069f] [US3] Test stock update validation (increase only, no decrease)
 
 ---
 
@@ -198,6 +235,16 @@ This task list implements the Product Domain API & Business Logic feature, deliv
 - [ ] [T084] [US4] Implement atomic slot status update (ACTIVE → COMPLETED) on payment success
 - [ ] [T085] [US4] Publish PAYMENT_COMPLETED Kafka event with trace ID
 
+### Unit & Integration Tests
+
+- [ ] [T085a] [US4] [P] Create PaymentServiceTest in `product/core/src/test/kotlin/com/dopaminestore/product/core/service/PaymentServiceTest.kt` with slot validation
+- [ ] [T085b] [US4] [P] Create PaymentGatewayStubTest in `product/adapter/src/test/kotlin/com/dopaminestore/product/adapter/external/PaymentGatewayStubTest.kt` with latency verification
+- [ ] [T085c] [US4] [P] Create PaymentControllerTest in `product/app/src/test/kotlin/com/dopaminestore/product/app/controller/PaymentControllerTest.kt` with WebTestClient
+- [ ] [T085d] [US4] Test idempotency key validation with duplicate payment requests
+- [ ] [T085e] [US4] Test expired slot rejection (409 Conflict) during payment
+- [ ] [T085f] [US4] Create PaymentWebhookConsumerTest in `product/worker/src/test/kotlin/com/dopaminestore/product/worker/consumer/PaymentWebhookConsumerTest.kt`
+- [ ] [T085g] [US4] Create PaymentIntegrationTest in `product/tests/src/test/kotlin/com/dopaminestore/product/integration/PaymentIntegrationTest.kt` with end-to-end webhook flow
+
 ---
 
 ## Phase 7: US5 - My Purchase Slots View (P5)
@@ -218,6 +265,14 @@ This task list implements the Product Domain API & Business Logic feature, deliv
 ### DTOs
 
 - [ ] [T091] [US5] [P] Create MySlotListResponse DTO in `product/app/src/main/kotlin/com/dopaminestore/product/app/dto/MySlotListResponse.kt` with totalCount
+
+### Unit & Integration Tests
+
+- [ ] [T091a] [US5] [P] Create SlotQueryServiceTest in `product/core/src/test/kotlin/com/dopaminestore/product/core/service/SlotQueryServiceTest.kt` with user filtering
+- [ ] [T091b] [US5] [P] Create SlotControllerTest in `product/app/src/test/kotlin/com/dopaminestore/product/app/controller/SlotControllerTest.kt` for GET endpoints
+- [ ] [T091c] [US5] Test user ownership validation (403 Forbidden for other user's slots)
+- [ ] [T091d] [US5] Test status filtering (ACTIVE, EXPIRED, COMPLETED)
+- [ ] [T091e] [US5] Test pagination with large slot history (100+ slots per user)
 
 ---
 
@@ -260,22 +315,32 @@ This task list implements the Product Domain API & Business Logic feature, deliv
 - [ ] [T109] Document Redis key patterns and TTL policies in `product/docs/redis-architecture.md`
 - [ ] [T110] Document Kafka event schemas and consumption patterns in `product/docs/event-architecture.md`
 
+### Unit & Integration Tests
+
+- [ ] [T110a] [P] Create HealthControllerTest in `product/app/src/test/kotlin/com/dopaminestore/product/app/controller/HealthControllerTest.kt` with component health checks
+- [ ] [T110b] [P] Create TraceIdFilterTest in `product/app/src/test/kotlin/com/dopaminestore/product/app/filter/TraceIdFilterTest.kt` with header propagation
+- [ ] [T110c] [P] Create GlobalExceptionHandlerTest in `product/app/src/test/kotlin/com/dopaminestore/product/app/exception/GlobalExceptionHandlerTest.kt` with RFC 7807 format
+- [ ] [T110d] [P] Test metrics collection for slot acquisition, payment success, and expiration rates
+- [ ] [T110e] [P] Test structured logging output with JSON format validation
+- [ ] [T110f] [P] Test trace ID propagation through Kafka events and Redis operations
+
 ---
 
 ## Task Summary
 
-**Total Tasks**: 110
-**Parallelizable Tasks**: 35 (marked with [P])
+**Total Tasks**: 152 (110 implementation + 42 test tasks)
+**Parallelizable Tasks**: 59 (marked with [P])
+**Test Tasks**: 42 (unit tests, integration tests, load tests)
 
 ### By Phase
 - Phase 1 (Setup): 16 tasks (T001-T016)
-- Phase 2 (Domain Core): 11 tasks (T017-T027)
-- Phase 3 (US1 - Slot Acquisition): 15 tasks (T028-T043)
-- Phase 4 (US2 - Slot Expiration): 11 tasks (T044-T054)
-- Phase 5 (US3 - Product Management): 15 tasks (T055-T069)
-- Phase 6 (US4 - Payment): 16 tasks (T070-T085)
-- Phase 7 (US5 - My Slots): 6 tasks (T086-T091)
-- Phase 8 (Observability): 19 tasks (T092-T110)
+- Phase 2 (Domain Core): 18 tasks (T017-T027g) - includes 7 unit test tasks
+- Phase 3 (US1 - Slot Acquisition): 21 tasks (T028-T043) - includes 6 unit/integration test tasks
+- Phase 4 (US2 - Slot Expiration): 17 tasks (T044-T054f) - includes 6 unit/integration test tasks
+- Phase 5 (US3 - Product Management): 21 tasks (T055-T069f) - includes 6 unit/integration test tasks
+- Phase 6 (US4 - Payment): 23 tasks (T070-T085g) - includes 7 unit/integration test tasks
+- Phase 7 (US5 - My Slots): 11 tasks (T086-T091e) - includes 5 unit/integration test tasks
+- Phase 8 (Observability): 25 tasks (T092-T110f) - includes 6 unit/integration test tasks
 
 ### By User Story
 - US1 (Slot Acquisition): 15 tasks
