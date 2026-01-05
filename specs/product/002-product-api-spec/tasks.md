@@ -68,15 +68,15 @@ This task list implements the Product Domain API & Business Logic feature, deliv
 - [X] [T026] [P] Create EventPublisher port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/EventPublisher.kt` for Kafka events
 - [X] [T027] [P] Create PaymentGateway port interface in `product/core/src/main/kotlin/com/dopaminestore/product/core/port/PaymentGateway.kt` for payment processing
 
-### Unit Tests (Domain Layer)
+### Unit Tests (Domain Layer) ✅ COMPLETE
 
-- [ ] [T027a] [P] Create Money value object tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/MoneyTest.kt` with arithmetic operations and validation
-- [ ] [T027b] [P] Create ProductStatus tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/ProductStatusTest.kt` with status computation
-- [ ] [T027c] [P] Create SlotStatus tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/SlotStatusTest.kt` with state transitions
-- [ ] [T027d] [P] Create PaymentStatus tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/PaymentStatusTest.kt` with validation
-- [ ] [T027e] [P] Create Product entity tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/ProductTest.kt` with stock management and status computation
-- [ ] [T027f] [P] Create PurchaseSlot entity tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/PurchaseSlotTest.kt` with expiration and state transitions
-- [ ] [T027g] [P] Create Purchase entity tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/PurchaseTest.kt` with payment status transitions
+- [X] [T027a] [P] Create Money value object tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/MoneyTest.kt` with arithmetic operations and validation (31 test cases)
+- [X] [T027b] [P] Create ProductStatus tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/ProductStatusTest.kt` with status computation (10 test cases)
+- [X] [T027c] [P] Create SlotStatus tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/SlotStatusTest.kt` with state transitions (10 test cases)
+- [X] [T027d] [P] Create PaymentStatus tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/value/PaymentStatusTest.kt` with validation (10 test cases)
+- [X] [T027e] [P] Create Product entity tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/ProductTest.kt` with stock management and status computation (18 test cases)
+- [X] [T027f] [P] Create PurchaseSlot entity tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/PurchaseSlotTest.kt` with expiration and state transitions (21 test cases)
+- [X] [T027g] [P] Create Purchase entity tests in `product/core/src/test/kotlin/com/dopaminestore/product/core/domain/PurchaseTest.kt` with payment status transitions (19 test cases)
 
 ---
 
