@@ -28,8 +28,7 @@ docs/
 /config/master.key
 /config/credentials/*.key
 
-# Ignore database configuration and files
-/config/database.yml
+# Ignore database files
 *.sqlite3
 *.sqlite3-*
 
