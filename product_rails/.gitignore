@@ -1,0 +1,75 @@
+# Documentation
+docs/
+
+# See https://help.github.com/articles/ignoring-files for more about ignoring files.
+
+# Ignore bundler config.
+/.bundle
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
+# Ignore uploaded files in development.
+/storage/*
+!/storage/.keep
+/tmp/storage/*
+!/tmp/storage/
+!/tmp/storage/.keep
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+/config/credentials/*.key
+
+# Ignore database configuration and files
+/config/database.yml
+*.sqlite3
+*.sqlite3-*
+
+# Ignore compiled assets
+/public/assets
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+# Ignore environment variables
+.env
+.env.local
+.env.*.local
+
+# Ignore IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Ignore test coverage
+/coverage/
+
+# Ignore Spring files
+/spring/*.pid
+
+# Ignore byebug command history
+.byebug_history
+
+# Ignore npm debug logs
+npm-debug.log*
+
+# Ignore RubyMine project files
+.rakeTasks
+
+# Ignore credentials
+/config/credentials/production.key
+/config/credentials/development.key
