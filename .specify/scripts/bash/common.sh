@@ -72,9 +72,12 @@ check_feature_branch() {
         return 0
     fi
 
-    if [[ ! "$branch" =~ ^[0-9]{3}- ]]; then
+    # Support both patterns:
+    # - ###-feature-name (legacy)
+    # - {module}/###-feature-name (new multi-module pattern)
+    if [[ ! "$branch" =~ ^[0-9]{3}- ]] && [[ ! "$branch" =~ ^[a-zA-Z]+/[0-9]{3}- ]]; then
         echo "ERROR: Not on a feature branch. Current branch: $branch" >&2
-        echo "Feature branches should be named like: 001-feature-name" >&2
+        echo "Feature branches should be named like: 001-feature-name or module/001-feature-name" >&2
         return 1
     fi
 
@@ -85,43 +88,72 @@ get_feature_dir() { echo "$1/specs/$2"; }
 
 # Find feature directory by numeric prefix instead of exact branch match
 # This allows multiple branches to work on the same spec (e.g., 004-fix-bug, 004-add-feature)
+# Supports both patterns:
+# - ###-feature-name → specs/###-feature-name
+# - {module}/###-feature-name → specs/{module}/###-feature-name
 find_feature_dir_by_prefix() {
     local repo_root="$1"
     local branch_name="$2"
     local specs_dir="$repo_root/specs"
 
-    # Extract numeric prefix from branch (e.g., "004" from "004-whatever")
-    if [[ ! "$branch_name" =~ ^([0-9]{3})- ]]; then
-        # If branch doesn't have numeric prefix, fall back to exact match
-        echo "$specs_dir/$branch_name"
+    # Check for multi-module pattern: {module}/###-feature-name
+    if [[ "$branch_name" =~ ^([a-zA-Z]+)/([0-9]{3})- ]]; then
+        local module="${BASH_REMATCH[1]}"
+        local prefix="${BASH_REMATCH[2]}"
+        local module_specs_dir="$specs_dir/$module"
+
+        # Search for directories in specs/{module}/ that start with this prefix
+        local matches=()
+        if [[ -d "$module_specs_dir" ]]; then
+            for dir in "$module_specs_dir"/"$prefix"-*; do
+                if [[ -d "$dir" ]]; then
+                    matches+=("$(basename "$dir")")
+                fi
+            done
+        fi
+
+        # Handle results
+        if [[ ${#matches[@]} -eq 0 ]]; then
+            # No match found - construct expected path from branch name
+            local feature_suffix="${branch_name#*/}"  # Remove module/ prefix
+            echo "$module_specs_dir/$feature_suffix"
+        elif [[ ${#matches[@]} -eq 1 ]]; then
+            echo "$module_specs_dir/${matches[0]}"
+        else
+            echo "ERROR: Multiple spec directories found with prefix '$prefix' in $module: ${matches[*]}" >&2
+            echo "$module_specs_dir/${matches[0]}"
+        fi
         return
     fi
 
-    local prefix="${BASH_REMATCH[1]}"
+    # Legacy pattern: ###-feature-name
+    if [[ "$branch_name" =~ ^([0-9]{3})- ]]; then
+        local prefix="${BASH_REMATCH[1]}"
 
-    # Search for directories in specs/ that start with this prefix
-    local matches=()
-    if [[ -d "$specs_dir" ]]; then
-        for dir in "$specs_dir"/"$prefix"-*; do
-            if [[ -d "$dir" ]]; then
-                matches+=("$(basename "$dir")")
-            fi
-        done
+        # Search for directories in specs/ that start with this prefix
+        local matches=()
+        if [[ -d "$specs_dir" ]]; then
+            for dir in "$specs_dir"/"$prefix"-*; do
+                if [[ -d "$dir" ]]; then
+                    matches+=("$(basename "$dir")")
+                fi
+            done
+        fi
+
+        # Handle results
+        if [[ ${#matches[@]} -eq 0 ]]; then
+            echo "$specs_dir/$branch_name"
+        elif [[ ${#matches[@]} -eq 1 ]]; then
+            echo "$specs_dir/${matches[0]}"
+        else
+            echo "ERROR: Multiple spec directories found with prefix '$prefix': ${matches[*]}" >&2
+            echo "$specs_dir/$branch_name"
+        fi
+        return
     fi
 
-    # Handle results
-    if [[ ${#matches[@]} -eq 0 ]]; then
-        # No match found - return the branch name path (will fail later with clear error)
-        echo "$specs_dir/$branch_name"
-    elif [[ ${#matches[@]} -eq 1 ]]; then
-        # Exactly one match - perfect!
-        echo "$specs_dir/${matches[0]}"
-    else
-        # Multiple matches - this shouldn't happen with proper naming convention
-        echo "ERROR: Multiple spec directories found with prefix '$prefix': ${matches[*]}" >&2
-        echo "Please ensure only one spec directory exists per numeric prefix." >&2
-        echo "$specs_dir/$branch_name"  # Return something to avoid breaking the script
-    fi
+    # Fall back to exact match for non-standard branch names
+    echo "$specs_dir/$branch_name"
 }
 
 get_feature_paths() {
