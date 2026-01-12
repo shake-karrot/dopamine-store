@@ -97,6 +97,17 @@ notification/
 ./gradlew :worker:bootRun
 ```
 
+## 로컬 테스트 환경 구성
+
+테스트 환경 구성 및 사용법은 `demo/` 폴더를 참고하세요.
+
+```bash
+cd demo
+./start-local-test.sh
+```
+
+자세한 내용은 [demo/TESTING.md](demo/TESTING.md)를 확인하세요.
+
 ## 환경 변수
 
 | 변수 | 기본값 | 설명 |

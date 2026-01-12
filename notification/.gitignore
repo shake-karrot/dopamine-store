@@ -34,6 +34,11 @@ logs/
 .env.*
 !.env.example
 
+# Python (demo)
+demo/venv/
+demo/*.pyc
+demo/__pycache__/
+
 # Test
 test-results/
 test-output/
