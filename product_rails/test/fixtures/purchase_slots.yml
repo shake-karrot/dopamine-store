@@ -1,21 +1,41 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  slot_id: MyString
-  user_id: MyString
-  queue_position: 
-  status: MyString
-  submitted_at: 2026-01-12 02:19:17
-  processed_at: 2026-01-12 02:19:17
-  expires_at: 2026-01-12 02:19:17
-  trace_id: MyString
+pending_slot:
+  product: active_product
+  user_id: test-user-123
+  queue_position: null
+  status: pending
+  submitted_at: <%= Time.current %>
+  processed_at: null
+  expires_at: null
+  trace_id: trace-pending-123
 
-two:
-  slot_id: MyString
-  user_id: MyString
-  queue_position: 
-  status: MyString
-  submitted_at: 2026-01-12 02:19:17
-  processed_at: 2026-01-12 02:19:17
-  expires_at: 2026-01-12 02:19:17
-  trace_id: MyString
+admitted_slot:
+  product: active_product
+  user_id: test-user-456
+  queue_position: 87
+  status: admitted
+  submitted_at: <%= 5.minutes.ago %>
+  processed_at: <%= 4.minutes.ago %>
+  expires_at: <%= 10.minutes.from_now %>
+  trace_id: trace-admitted-456
+
+rejected_slot:
+  product: sold_out_product
+  user_id: test-user-789
+  queue_position: 1523
+  status: rejected
+  submitted_at: <%= 10.minutes.ago %>
+  processed_at: <%= 9.minutes.ago %>
+  expires_at: null
+  trace_id: trace-rejected-789
+
+expired_slot:
+  product: active_product
+  user_id: test-user-999
+  queue_position: 50
+  status: admitted
+  submitted_at: <%= 30.minutes.ago %>
+  processed_at: <%= 29.minutes.ago %>
+  expires_at: <%= 5.minutes.ago %>
+  trace_id: trace-expired-999
