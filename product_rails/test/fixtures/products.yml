@@ -1,23 +1,31 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  product_id: MyString
-  name: MyString
-  description: MyText
-  total_stock: 1
-  available_stock: 1
-  price: 9.99
-  sale_starts_at: 2026-01-12 02:18:50
-  sale_ends_at: 2026-01-12 02:18:50
-  status: MyString
+active_product:
+  name: Limited Edition Sneakers
+  description: High-quality limited edition sneakers
+  total_stock: 1000
+  available_stock: 500
+  price: 150000
+  sale_starts_at: <%= 1.day.ago %>
+  sale_ends_at: <%= 1.day.from_now %>
+  status: active
 
-two:
-  product_id: MyString
-  name: MyString
-  description: MyText
-  total_stock: 1
-  available_stock: 1
-  price: 9.99
-  sale_starts_at: 2026-01-12 02:18:50
-  sale_ends_at: 2026-01-12 02:18:50
-  status: MyString
+scheduled_product:
+  name: Upcoming Winter Jacket
+  description: Premium winter jacket coming soon
+  total_stock: 500
+  available_stock: 500
+  price: 200000
+  sale_starts_at: <%= 1.day.from_now %>
+  sale_ends_at: <%= 2.days.from_now %>
+  status: scheduled
+
+sold_out_product:
+  name: Sold Out Watch
+  description: Smart watch - sold out
+  total_stock: 100
+  available_stock: 0
+  price: 300000
+  sale_starts_at: <%= 2.days.ago %>
+  sale_ends_at: <%= 1.day.from_now %>
+  status: sold_out

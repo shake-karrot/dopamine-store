@@ -8,6 +8,17 @@ Rails.application.routes.draw do
   # Custom health check endpoint with service status
   get "health" => "health#index"
 
+  # API v1 routes
+  namespace :api do
+    namespace :v1 do
+      # Purchase slots (Step 1: Acquire purchase permission)
+      resources :purchase_slots, only: [:create, :show]
+
+      # Purchases (Step 2: Complete purchase with approved slot)
+      resources :purchases, only: [:create]
+    end
+  end
+
   # Defines the root path route ("/")
   # root "posts#index"
 end
